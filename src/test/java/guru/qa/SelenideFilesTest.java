@@ -27,7 +27,7 @@ import static com.codeborne.selenide.Selenide.sleep;
 
 public class SelenideFilesTest {
 
-    ClassLoader cl = getClass().getClassLoader();
+    ClassLoader classLoader = getClass().getClassLoader();
 
     @Test
     void downloadTest() throws Exception {
@@ -49,7 +49,7 @@ public class SelenideFilesTest {
 
     @Test
     void pdfParsingTest() throws Exception {
-        try (InputStream stream = cl.getResourceAsStream("pdf/junit-user-guide-5.8.2.pdf")) {
+        try (InputStream stream = classLoader.getResourceAsStream("pdf/junit-user-guide-5.8.2.pdf")) {
             PDF pdf = new PDF(Objects.requireNonNull(stream));
             org.junit.jupiter.api.Assertions.assertEquals(166, pdf.numberOfPages);
             MatcherAssert.assertThat(pdf, new ContainsExactText("123"));
@@ -70,7 +70,7 @@ public class SelenideFilesTest {
 
     @Test
     void xlsParsingTest() throws Exception {
-        try (InputStream stream = cl.getResourceAsStream("xls/sample3.xls")) {
+        try (InputStream stream = classLoader.getResourceAsStream("xls/sample3.xls")) {
             XLS xls = new XLS(Objects.requireNonNull(stream));
             String stringCellValue = xls.excel
                     .getSheetAt(1).getRow(6).getCell(2).getStringCellValue();
@@ -94,7 +94,7 @@ public class SelenideFilesTest {
 
     @Test
     void csvParsingTest() throws Exception {
-        try (InputStream stream = cl.getResourceAsStream("csv/test.csv");
+        try (InputStream stream = classLoader.getResourceAsStream("csv/test.csv");
              CSVReader reader = new CSVReader(new InputStreamReader
                      (Objects.requireNonNull(stream), StandardCharsets.UTF_8))) {
             List<String[]> csvContent = reader.readAll();
@@ -109,7 +109,7 @@ public class SelenideFilesTest {
     @Test
     void zipParsingTest() throws Exception {
 
-        try (InputStream is = cl.getResourceAsStream("zip/gurutest.zip");
+        try (InputStream is = classLoader.getResourceAsStream("zip/gurutest.zip");
              ZipInputStream zis = new ZipInputStream(Objects.requireNonNull(is))) {
             ZipEntry entry;
             while ((entry = zis.getNextEntry()) != null) {
@@ -123,7 +123,7 @@ public class SelenideFilesTest {
     @Test
     void zipFileParsingTest() throws Exception {
         ZipFile zipFile = new ZipFile(new File("src/test/resources/zip/gurutest.zip"));
-        ZipInputStream zis = new ZipInputStream(cl.getResourceAsStream("zip/gurutest.zip"));
+        ZipInputStream zis = new ZipInputStream(classLoader.getResourceAsStream("zip/gurutest.zip"));
         ZipEntry entry;
         while((entry = zis.getNextEntry()) != null) {
             Assertions.assertThat(entry.getName())
@@ -138,7 +138,7 @@ public class SelenideFilesTest {
     void jsonParsingTest() throws Exception {
         Gson gson = new Gson();
 
-        try (InputStream is = cl.getResourceAsStream("json/package.json")) {
+        try (InputStream is = classLoader.getResourceAsStream("json/package.json")) {
             String json = new String(is.readAllBytes(), StandardCharsets.UTF_8);
             JsonObject jsonObject = gson.fromJson(json, JsonObject.class);
             Assertions.assertThat(jsonObject.get("author").getAsString())
@@ -153,7 +153,7 @@ public class SelenideFilesTest {
     void jsonTypeTest() throws Exception {
         Gson gson = new Gson();
 
-        try (InputStream is = cl.getResourceAsStream("json/teacher.json")) {
+        try (InputStream is = classLoader.getResourceAsStream("json/teacher.json")) {
             String json = new String(is.readAllBytes(), StandardCharsets.UTF_8);
             Teacher jsonObject = gson.fromJson(json, Teacher.class);
             Assertions.assertThat(jsonObject.name).isEqualTo("Dmitrii");
